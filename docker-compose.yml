@@ -1,0 +1,37 @@
+name: listorama
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: php.Dockerfile
+    container_name: listorama_php
+    depends_on:
+      - postgres
+    volumes:
+      - ./src/:/var/www/html
+    ports:
+      - 8000:80
+  
+  postgres:
+    container_name: listorama_postgres
+    image: postgres:16
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_PASSWORD: db-pass
+      POSTGRES_USER: root
+      POSTGRES_DB: listorama
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_db:/var/lib/postgresql/data
+  
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+volumes:
+  postgres_db:
